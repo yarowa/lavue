@@ -13,7 +13,7 @@ class Question extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function setTitelAttribute($value)
+    public function setTitleAttribute($value)
     {
         $this->attributes['title'] = $value;
         $this->attributes['slug'] = Str::slug($value);

@@ -23,6 +23,11 @@ class Answer extends Model
         return $markdown->convertToHtml($this->body);
     }
 
+    public function getCreatedDateAttribute()
+    {
+        return $this->created_at->diffForHumans();
+    }
+
     public static function boot()
     {
         parent::boot();

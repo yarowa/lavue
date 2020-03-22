@@ -60,11 +60,11 @@ class QuestionsController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Question  $question
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function edit(Question $question)
     {
-        //
+        return view('questions.edit', compact('question'));
     }
 
     /**
@@ -72,11 +72,12 @@ class QuestionsController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Question  $question
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Question $question)
+    public function update(AskQuestionRequest $request, Question $question)
     {
-        //
+        $question->update($request->only('title', 'body'));
+        return redirect()->route('questions.index')->with('success', 'Your question has been updated');
     }
 
     /**

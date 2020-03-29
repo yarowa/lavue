@@ -4,8 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Answer;
 use App\Question;
+use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class AnswersController extends Controller
 {
@@ -15,8 +20,8 @@ class AnswersController extends Controller
      * Store a newly created resource in storage.
      *
      * @param Question $question
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @param Request $request
+     * @return RedirectResponse
      */
     public function store(Question $question, Request $request)
     {
@@ -31,8 +36,10 @@ class AnswersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Answer  $answer
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param Question $question
+     * @param Answer $answer
+     * @return Factory|View
+     * @throws AuthorizationException
      */
     public function edit(Question $question, Answer $answer)
     {
@@ -43,9 +50,11 @@ class AnswersController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Answer  $answer
-     * @return \Illuminate\Http\RedirectResponse
+     * @param Request $request
+     * @param Question $question
+     * @param Answer $answer
+     * @return RedirectResponse
+     * @throws AuthorizationException
      */
     public function update(Request $request, Question $question,  Answer $answer)
     {
@@ -59,11 +68,15 @@ class AnswersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Answer  $answer
-     * @return \Illuminate\Http\Response
+     * @param Question $question
+     * @param Answer $answer
+     * @return RedirectResponse
+     * @throws Exception
      */
-    public function destroy(Answer $answer)
+    public function destroy(Question $question, Answer $answer)
     {
-        //
+        $this->authorize('delete', $answer);
+        $answer->delete();
+        return back()->with('success', 'Your answer has been removed successfully!.');
     }
 }

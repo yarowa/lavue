@@ -35,6 +35,10 @@
                                 >
                                     <i class="fas fa-caret-down fa-3x"></i>
                                 </a>
+                                <form id="down-vote-question-{{$question->id}}" action="/questions/{{$question->id}}/vote" method="POST"  style="display: none">
+                                    @csrf
+                                    <input type="hidden" name="vote" value="-1">
+                                </form>
                                 <a title="Click to mark as favorite question (click again to undo)"
                                    class="favorite mt-2 {{Auth::guest() ? 'off' : ($question->is_favored ? 'favorited' : '')}}"
                                    onclick="event.preventDefault(); document.getElementById('favorite-question-{{$question->id}}').submit();"
@@ -42,10 +46,7 @@
                                     <i class="fas fa-star fa-2x"></i>
                                     <span class="favorites-count">{{ $question->favorites_count }}</span>
                                 </a>
-                                <form id="down-vote-question-{{$question->id}}" action="/questions/{{$question->id}}/vote" method="POST"  style="display: none">
-                                    @csrf
-                                    <input type="hidden" name="vote" value="-1">
-                                </form>
+
                                 <form id="favorite-question-{{$question->id}}" action="/questions/{{$question->id}}/favorites" method="POST"  style="display: none">
                                     @csrf
                                     @if($question->is_favored)

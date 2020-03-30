@@ -44,16 +44,24 @@ class Question extends Model
 
     public function getBodyHtmlAttribute()
     {
-        $markdown = new CommonMarkConverter(['allow_unsafe_links' => false]);
-        return $markdown->convertToHtml($this->body);
+        return clean($this->bodyHtml());
     }
 
+    public function getExcerptAttribute()
+    {
+        return $this->excerpt(250);
+    }
 
-    /*protected function bodyHtml()
+    public function excerpt($length)
+    {
+        return str_limit(strip_tags($this->bodyHtml()), $length);
+    }
+
+    protected function bodyHtml()
     {
         $markdown = new CommonMarkConverter(['allow_unsafe_links' => false]);
         return $markdown->convertToHtml($this->body);
-    }*/
+    }
 
     public function answers()
     {

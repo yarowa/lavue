@@ -28,8 +28,7 @@ Vue.use(Authorization);
 
 Vue.component('user-info', require('./components/UserInfo.vue').default);
 Vue.component('Answer', require('./components/Answer.vue').default);
-Vue.component('Favorite', require('./components/Favorite.vue').default);
-Vue.component('Accept', require('./components/Accept.vue').default);
+Vue.component('Vote', require('./components/Vote.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

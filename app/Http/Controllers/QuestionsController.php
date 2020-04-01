@@ -4,8 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AskQuestionRequest;
 use App\Question;
+use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
 
 class QuestionsController extends Controller
 {
@@ -17,12 +22,12 @@ class QuestionsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return Factory|View
      */
     public function index()
     {
         //\DB::enableQueryLog();
-        $questions = Question::with('user')->latest()->paginate(5);
+        $questions = Question::with(['user', 'answers.user'])->latest()->paginate(5);
          return view('questions.index', compact('questions'));
 
          //dd(\DB::getQueryLog());
@@ -31,7 +36,7 @@ class QuestionsController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return Factory|View
      */
     public function create()
     {
@@ -42,8 +47,8 @@ class QuestionsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @param AskQuestionRequest $request
+     * @return RedirectResponse
      */
     public function store(AskQuestionRequest $request)
     {
@@ -54,8 +59,8 @@ class QuestionsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Question  $question
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param Question $question
+     * @return Factory|View
      */
     public function show(Question $question)
     {
@@ -66,8 +71,9 @@ class QuestionsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Question  $question
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param Question $question
+     * @return Factory|View
+     * @throws AuthorizationException
      */
     public function edit(Question $question)
     {
@@ -81,9 +87,10 @@ class QuestionsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Question  $question
-     * @return \Illuminate\Http\RedirectResponse
+     * @param AskQuestionRequest $request
+     * @param Question $question
+     * @return RedirectResponse
+     * @throws AuthorizationException
      */
     public function update(AskQuestionRequest $request, Question $question)
     {
@@ -98,9 +105,9 @@ class QuestionsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Question $question
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Exception
+     * @param Question $question
+     * @return RedirectResponse
+     * @throws Exception
      */
     public function destroy(Question $question)
     {

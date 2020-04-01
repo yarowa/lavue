@@ -7,6 +7,7 @@ use App\Question;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -53,7 +54,7 @@ class AnswersController extends Controller
      * @param Request $request
      * @param Question $question
      * @param Answer $answer
-     * @return RedirectResponse
+     * @return JsonResponse|RedirectResponse
      * @throws AuthorizationException
      */
     public function update(Request $request, Question $question,  Answer $answer)
@@ -62,7 +63,13 @@ class AnswersController extends Controller
         $answer->update($request->validate([
             'body' => 'required',
         ]));
-        return redirect()->route('questions.show', $question->slug)->with('success', 'Your answer has been updated');
+        if ($request->expectsJson()){
+            return response()->json([
+                'message' => 'Your answer has been updated',
+                'body_html' => $answer->body_html
+            ]);
+        }
+        //return redirect()->route('questions.show', $question->slug)->with('success', 'Your answer has been updated');
     }
 
     /**
@@ -70,13 +77,18 @@ class AnswersController extends Controller
      *
      * @param Question $question
      * @param Answer $answer
-     * @return RedirectResponse
+     * @return JsonResponse
      * @throws Exception
      */
     public function destroy(Question $question, Answer $answer)
     {
         $this->authorize('delete', $answer);
         $answer->delete();
+        if (request()->expectsJson()){
+            return response()->json([
+               'message' => 'Your answer has been removed successfully!.'
+            ]);
+        }
         return back()->with('success', 'Your answer has been removed successfully!.');
     }
 }

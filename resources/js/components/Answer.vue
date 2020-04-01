@@ -31,21 +31,46 @@
                 }).then(response => {
                      //console.log(response);
                     this.editing = false;
-                    this.bodyHtml = response.data.body_html
-                    alert(response.data.message)
+                    this.bodyHtml = response.data.body_html;
+                    this.$toast.success(response.data.message, 'Success', {timeout: 3000});
                 }).catch(error => {
-                    // console.log("Ooops something went wrong");
-                    alert(error.response.data.message)
+                    this.$toast.error(error.response.data.message, 'Error', {timeout: 3000});
                 })
             },
             destroy () {
-                if (confirm('Are you sure you want to delete?')){
-                    axios.delete(this.endpoint).then(response => {
-                        $(this.$el).fadeOut(500, () =>{
-                            alert(response.data.message);
-                        })
-                    })
-                }
+
+                this.$toast.question('Are you sure about that?',"Confirm",{
+                    timeout: 20000,
+                    close: false,
+                    overlay: true,
+                    displayMode: 'once',
+                    id: 'question',
+                    zindex: 999,
+                    title: 'Hey',
+                    position: 'center',
+                    buttons: [
+                        ['<button><b>YES</b></button>',  (instance, toast) => {
+
+                            axios.delete(this.endpoint).then(response => {
+                                $(this.$el).fadeOut(500, () =>{
+                                    this.$toast.success(response.data.message, 'Success', {timeout: 3000});
+                                })
+                            });
+
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+
+                        }, true],
+                        ['<button>NO</button>', function (instance, toast) {
+
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+
+                        }],
+                    ],
+
+                });
+
+
+
             }
 
         },

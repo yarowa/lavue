@@ -14,7 +14,6 @@
     $formId = $name . "-" . $model->id;
     $formAction = "/{$firstURISegment}/{$model->id}/vote";
 @endphp
-
 <div class="d-fex flex-column vote-controls">
     <a title="This {{ $name }} is useful"
        class="vote-up {{ Auth::guest() ? 'off' : '' }}"
@@ -41,16 +40,8 @@
     </form>
 
     @if ($model instanceof App\Question)
-        <Favorite :question="{{ $model }}"></Favorite>
+        <favorite :question="{{ $model }}"></favorite>
     @elseif ($model instanceof App\Answer)
-        <Accept :answer="{{ $model }}"></Accept>
-        {{--@include ('shared._accept', [
-             'model' => $model
-         ])--}}
+        <accept :answer="{{ $model }}"></accept>
     @endif
 </div>
-
-
-
-{{--<Favorite :question="{{ $model }}"></Favorite>
-<Accept :answer="{{ $model }}"></Accept>--}}

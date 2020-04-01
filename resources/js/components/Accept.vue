@@ -21,13 +21,13 @@
 
         data () {
           return {
-              isBest: this.isBest,
+              isBest: this.answer.is_best,
               id: this.answer.id
           }
         },
         computed: {
             canAccept () {
-                return true
+                return this.authorize('accept', this.answer)
             },
             accepted () {
                 return ! this.canAccept && this.isBest;
@@ -35,8 +35,8 @@
             classes () {
                 return [
                     'mt-2',
-                this.isBest ? 'vote-accepted' : ''
-                ]
+                    this.isBest ? 'vote-accepted' : ''
+                ];
             }
         },
         methods: {

@@ -10,20 +10,21 @@ class Question extends Model
 {
     use VotableTrait;
     protected $fillable = ['title', 'body'];
-    public function user()
-    {
+    protected $appends = ['created_date'];
+
+    public function user() {
         return $this->belongsTo(User::class);
     }
 
     public function setTitleAttribute($value)
     {
         $this->attributes['title'] = $value;
-        $this->attributes['slug'] = Str::slug($value);
+        $this->attributes['slug'] = str_slug($value);
     }
 
     public function getUrlAttribute()
     {
-        return route('questions.show', $this->slug);
+        return route("questions.show", $this->slug);
     }
 
     public function getCreatedDateAttribute()
@@ -65,7 +66,7 @@ class Question extends Model
 
     public function answers()
     {
-        return $this->hasMany(Answer::class)->orderBy('votes_count', 'DESC');
+        return $this->hasMany(Answer::class)->with('user')->orderBy('votes_count', 'DESC');
     }
 
     public function acceptBestAnswer($answer)

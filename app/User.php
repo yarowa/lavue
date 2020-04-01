@@ -36,6 +36,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    protected $appends = ['url', 'avatar'];
 
     public function questions()
     {
@@ -56,8 +57,8 @@ class User extends Authenticatable
     {
         $email = $this->email;
         $size = 32;
-        $grav_url = "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $email ) ) ) . "?s=" . $size;
-        return $grav_url;
+
+        return "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $email ) ) ) . "?s=" . $size;
     }
 
     public function favorites()

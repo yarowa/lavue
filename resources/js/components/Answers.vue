@@ -7,7 +7,7 @@
                         <h2>{{ title }}</h2>
                     </div>
                     <hr>
-                    <Answer v-for="answer  in answers" :answer="answer" :key="answer.id"></Answer>
+                    <Answer @deleted="remove (index)" v-for="(answer, index)  in answers" :answer="answer" :key="answer.id"></Answer>
                     <div class="text-center mt-3" v-if="nextAnswer">
                         <button @click.prevent="fetch(nextAnswer)" class="btn btn-outline-secondary">Load more answers</button>
                     </div>
@@ -34,6 +34,10 @@
             this.fetch(`/questions/${this.questionId}/answers`)
         },
         methods: {
+            remove (index) {
+                this.answers.splice(index, 1);
+                this.count --;
+            },
             fetch (url) {
                 axios.get(url).then( ({data})=> {
                     this.answers.push(...data.data);

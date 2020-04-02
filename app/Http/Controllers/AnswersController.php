@@ -16,6 +16,25 @@ use Illuminate\View\View;
 class AnswersController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->middleware('auth')->except('index');
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param Question $question
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function index(Question $question)
+    {
+        $answers = $question->answers()->with('user')->simplePaginate(3);
+
+        return $answers;
+    }
 
     /**
      * Store a newly created resource in storage.

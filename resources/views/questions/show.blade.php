@@ -44,7 +44,7 @@
             'answers' => $question->answers,
             'answerCount' => $question->answers_count,
         ])--}}
-        <Answers :answers="{{ $question->answers }}" :count="{{ $question->answers_count }}"></Answers>
+        <Answers :question="{{ $question }}"></Answers>
         @include('answers._create')
     </div>
 @endsection

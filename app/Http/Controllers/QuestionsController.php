@@ -68,6 +68,7 @@ class QuestionsController extends Controller
         return view('questions.show', compact('question'));
     }
 
+
     /**
      * Show the form for editing the specified resource.
      *

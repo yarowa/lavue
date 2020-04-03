@@ -20,7 +20,7 @@
                         </div>
                     </div>
                     <div class="col-4"></div>
-                    <user-info :model="answer" label="Answered"></user-info>
+                    <UserInfo :model="answer" label="Answered"></UserInfo>
                 </div>
             </div>
         </div>
@@ -28,7 +28,10 @@
 </template>
 
 <script>
+    import UserInfo from "./UserInfo";
+    import Vote from "./Vote";
     export default {
+        components: {Vote, UserInfo},
         props: ['answer'],
 
         data () {
@@ -51,10 +54,9 @@
                 this.editing = false
             },
             update () {
-                axios.patch(this.endpoint, {
+                axios.patch(this.url, {
                     body: this.body
                 }).then(response => {
-                     //console.log(response);
                     this.editing = false;
                     this.bodyHtml = response.data.body_html;
                     this.$toast.success(response.data.message, 'Success', {timeout: 3000});
@@ -76,7 +78,7 @@
                     buttons: [
                         ['<button><b>YES</b></button>',  (instance, toast) => {
 
-                            axios.delete(this.endpoint).then(response => {
+                            axios.delete(this.url).then(response => {
                                 this.$emit('deleted', )
                                 /*$(this.$el).fadeOut(500, () =>{
                                     this.$toast.success(response.data.message, 'Success', {timeout: 3000});
@@ -104,7 +106,7 @@
             isInvalid () {
                 return this.body.length < 10
             },
-            endpoint () {
+            url () {
                 return `/questions/${this.questionId}/answers/${this.id}`
             }
         }

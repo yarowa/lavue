@@ -7,6 +7,7 @@ use App\Question;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -90,7 +91,7 @@ class QuestionsController extends Controller
      *
      * @param AskQuestionRequest $request
      * @param Question $question
-     * @return RedirectResponse
+     * @return JsonResponse
      * @throws AuthorizationException
      */
     public function update(AskQuestionRequest $request, Question $question)
@@ -100,14 +101,20 @@ class QuestionsController extends Controller
         }*/
         $this->authorize('update', $question);
         $question->update($request->only('title', 'body'));
-        return redirect()->route('questions.index')->with('success', 'Your question has been updated');
+        if (request()->expectsJson()){
+            return response()->json([
+                'message' => "Your question has been updated.",
+                'body_html' => $question->body_html
+            ]);
+        }
+        //return redirect()->route('questions.index')->with('success', 'Your question has been updated');
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param Question $question
-     * @return RedirectResponse
+     * @return JsonResponse
      * @throws Exception
      */
     public function destroy(Question $question)
@@ -118,6 +125,12 @@ class QuestionsController extends Controller
         $this->authorize('delete', $question);
         $question->delete();
 
-        return redirect('/questions')->with('success', "Your question has been deleted.");
+        if (request()->expectsJson()){
+            return response()->json([
+                'message' => 'Your question has been deleted.'
+            ]);
+        }
+
+        //return redirect('/questions')->with('success', "Your question has been deleted.");
     }
 }

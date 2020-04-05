@@ -23,15 +23,18 @@
 <script>
     import Answer from "./Answer";
     import NewAnswer from "./NewAnswer";
+    import highlight from "../mixins/highlight";
     export default {
         name: "Answers",
         props: ['question'],
+        mixins: [highlight],
         data () {
             return {
                 questionId: this.question.id,
                 count: this.question.answers_count,
                 answers: [],
-                nextAnswer: null
+                nextAnswer: null,
+                answerIds: []
             }
         },
         created() {
@@ -41,15 +44,26 @@
             add (answer) {
                 this.answers.push(answer);
                 this.count ++;
+                this.$nextTick(() => {
+                    this.highlight(`answer-${answer.id}`);
+                })
             },
             remove (index) {
                 this.answers.splice(index, 1);
                 this.count --;
             },
             fetch (url) {
-                axios.get(url).then( ({data})=> {
+                this.answerIds = [];
+                axios.get(url)
+                 .then( ({data})=> {
+                     this.answerIds = data.data.map(a => a.id);
                     this.answers.push(...data.data);
                     this.nextAnswer = data.next_page_url;
+                })
+                .then(()=> {
+                    this.answerIds.forEach((id)=>{
+                        this.highlight(`answer-${id}`);
+                    })
                 })
             }
         },

@@ -3,15 +3,17 @@
         <Vote :model="answer" name="answer"></Vote>
 
         <div class="media-body">
-            <form v-if="editing" @submit.prevent="update">
+            <form v-show="authorize('modify', answer) && editing" @submit.prevent="update">
                 <div class="form-group">
-                    <textarea rows="10" v-model="body" class="form-control" required></textarea>
+                    <Editor :body="body" :name="uniqueName">
+                        <textarea rows="10" v-model="body" class="form-control" required></textarea>
+                    </Editor>
                 </div>
                 <button class="btn btn-primary" :disabled="isInvalid">Update</button>
                 <button class="btn btn-outline-secondary" @click="cancel" type="button">Cancel</button>
             </form>
-            <div v-else>
-                <div v-html="bodyHtml"></div>
+            <div v-show="!editing">
+                <div :id="uniqueName" v-html="bodyHtml" ref="bodyHtml"></div>
                 <div class="row">
                     <div class="col-4">
                         <div class="ml-auto">
@@ -20,7 +22,8 @@
                         </div>
                     </div>
                     <div class="col-4"></div>
-                    <UserInfo :model="answer" label="Answered"></UserInfo>
+                        <UserInfo :model="answer" label="Answered"></UserInfo>
+
                 </div>
             </div>
         </div>
@@ -28,15 +31,13 @@
 </template>
 
 <script>
-    import UserInfo from "./UserInfo";
-    import Vote from "./Vote";
+    import Paths from "../mixins/paths";
     export default {
-        components: {Vote, UserInfo},
         props: ['answer'],
+        mixins: [Paths],
 
         data () {
             return {
-                editing: false,
                 body: this.answer.body,
                 bodyHtml: this.answer.body_html,
                 id: this.answer.id,
@@ -45,60 +46,23 @@
             }
         },
         methods: {
-            edit () {
+            setEditCache () {
                 this.beforeEdit = this.body;
-                this.editing = true
             },
-            cancel (){
+            restoreFromCache (){
                 this.body = this.beforeEdit;
-                this.editing = false
             },
-            update () {
-                axios.patch(this.url, {
-                    body: this.body
-                }).then(response => {
-                    this.editing = false;
-                    this.bodyHtml = response.data.body_html;
+            payload() {
+              return {
+                  body: this.body
+              }
+            },
+            delete () {
+                axios.delete(this.url).then(response => {
+                    this.$emit('deleted', );
                     this.$toast.success(response.data.message, 'Success', {timeout: 3000});
-                }).catch(error => {
-                    this.$toast.error(error.response.data.message, 'Error', {timeout: 3000});
-                })
-            },
-            destroy () {
-
-                this.$toast.question('Are you sure about that?',"Confirm",{
-                    timeout: 20000,
-                    close: false,
-                    overlay: true,
-                    displayMode: 'once',
-                    id: 'question',
-                    zindex: 999,
-                    title: 'Hey',
-                    position: 'center',
-                    buttons: [
-                        ['<button><b>YES</b></button>',  (instance, toast) => {
-
-                            axios.delete(this.url).then(response => {
-                                this.$emit('deleted', )
-                                /*$(this.$el).fadeOut(500, () =>{
-                                    this.$toast.success(response.data.message, 'Success', {timeout: 3000});
-                                })*/
-                            });
-
-                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-
-                        }, true],
-                        ['<button>NO</button>', function (instance, toast) {
-
-                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-
-                        }],
-                    ],
 
                 });
-
-
-
             }
 
         },
@@ -108,6 +72,9 @@
             },
             url () {
                 return `/questions/${this.questionId}/answers/${this.id}`
+            },
+            uniqueName () {
+                return `answer-${this.id}`;
             }
         }
     }

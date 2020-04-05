@@ -8,7 +8,9 @@
                         <hr>
                         <form @submit.prevent="create">
                             <div class="form-group">
-                                <textarea class="form-control" required v-model="body" name="body" rows="7"></textarea>
+                                <Editor :body="body" name="new-answer">
+                                    <textarea class="form-control" required v-model="body" name="body" rows="7"></textarea>
+                                </Editor>
                             </div>
                             <div class="form-group">
                                 <button :disabled="isInvalid" type="submit" class="btn btn-lg btn-outline-primary">Submit</button>
@@ -24,8 +26,10 @@
 </template>
 
 <script>
+    import Editor from "./Editor";
     export default {
         name: "NewAnswer",
+        components: {Editor},
         props: ['questionId'],
         methods: {
             create () {

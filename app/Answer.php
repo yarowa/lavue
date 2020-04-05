@@ -22,8 +22,12 @@ class Answer extends Model
 
     public function getBodyHtmlAttribute()
     {
+        return clean($this->bodyHtml());
+    }
+    protected function bodyHtml()
+    {
         $markdown = new CommonMarkConverter(['allow_unsafe_links' => false]);
-        return clean($markdown->convertToHtml($this->body));
+        return $markdown->convertToHtml($this->body);
     }
 
     public function getCreatedDateAttribute()

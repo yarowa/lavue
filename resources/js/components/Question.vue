@@ -2,7 +2,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <form class="card-body" v-if="editing" @submit.prevent="update">
+                <form class="card-body" v-show="authorize('modify', question) && editing" @submit.prevent="update">
                     <div class="card-title">
                         <input type="text" class="form-control form-control-lg" v-model="title">
                     </div>
@@ -12,14 +12,16 @@
                     <div class="media">
                         <div class="media-body">
                             <div class="form-group">
-                                <textarea rows="10" v-model="body" class="form-control" required></textarea>
+                                <Editor :body="body" :name="uniqueName">
+                                    <textarea rows="10" v-model="body" class="form-control" required></textarea>
+                                </Editor>
                             </div>
                             <button class="btn btn-primary" :disabled="isInvalid">Update</button>
                             <button class="btn btn-outline-secondary" @click="cancel" type="button">Cancel</button>
                         </div>
                     </div>
                 </form>
-                <div class="card-body" v-else>
+                <div class="card-body" v-show="! editing">
                     <div class="card-title">
                         <div class="d-flex align-item-center">
                             <h2>{{ title }}</h2>
@@ -34,7 +36,7 @@
 
                         <Vote :model="question" name="question"></Vote>
                         <div class="media-body">
-                            <div v-html="bodyHtml"></div>
+                            <div v-html="bodyHtml" ref="bodyHtml"></div>
                             <div class="row">
                                 <div class="col-4">
                                     <div class="ml-auto">
@@ -55,15 +57,12 @@
 </template>
 
 <script>
-    import Vote from './Vote';
-    import UserInfo from "./UserInfo";
+    import paths from "../mixins/paths";
     export default {
         name: "Question",
         props: ['question'],
+        mixins: [paths],
 
-        components: {
-            Vote, UserInfo
-        },
 
 
         data () {
@@ -71,7 +70,6 @@
                 title: this.question.title,
                 body: this.question.body,
                 bodyHtml: this.question.body_html,
-                editing: false,
                 id: this.question.id,
                 beforeEdit: {}
             }
@@ -82,88 +80,42 @@
             },
             url () {
                 return `/questions/${this.id}`;
+            },
+            uniqueName () {
+                return `question-${this.id}`;
             }
         },
         methods: {
-            edit () {
+            setEditCache () {
                 this.beforeEdit = {
-                    title: this.title,
-                    body: this.body
-                };
-                this.editing = true
-            },
-            cancel () {
-                this.title = this.beforeEdit.title;
-                this.body = this.beforeEdit.body;
-                this.editing = false;
-            },
-
-            /*update () {
-                axios.put(this.url, {
-                    title: this.title,
-                    body: this.body
-                }).then(({data}) => {
-                    this.bodyHtml = data.body_html;
-                    this.$toast.success(data.message, 'Success', {timeout: 3000});
-                    this.editing = false;
-                })
-                .catch(({response}) => {
-                    this.$toast.error(response.data.message, "Error", {timeout: 3000});
-                })
-            },*/
-            update () {
-                axios.put(this.url, {
                     body: this.body,
                     title: this.title
-                })
-                    .catch(({response}) => {
-                        this.$toast.error(response.data.message, "Error", { timeout: 3000 });
-                    })
-                    .then(({data}) => {
-                        this.bodyHtml = data.body_html;
-                        this.$toast.success(data.message, "Success", { timeout: 3000 });
-                        this.editing = false;
-                    })
+                };
             },
-            destroy () {
 
-                this.$toast.question('Are you sure about that?',"Confirm",{
-                    timeout: 20000,
-                    close: false,
-                    overlay: true,
-                    displayMode: 'once',
-                    id: 'question',
-                    zindex: 999,
-                    title: 'Hey',
-                    position: 'center',
-                    buttons: [
-                        ['<button><b>YES</b></button>',  (instance, toast) => {
+            restoreFromCache () {
+                this.body = this.beforeEdit.body;
+                this.title = this.beforeEdit.title;
+            },
 
-                            axios.delete(this.url).then(({data}) => {
-                                this.$emit('deleted', );
-                                this.$toast.success(data.message, 'Success', {timeout: 2000});
-                                /*$(this.$el).fadeOut(500, () =>{
-                                })*/
-                            });
-                            setTimeout(() =>{
-                                window.location.href = "/questions"
-                            }, 3000);
+            payload () {
+                return {
+                    body: this.body,
+                    title: this.title
+                };
+            },
 
-                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-
-                        }, true],
-                        ['<button>NO</button>', function (instance, toast) {
-
-                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-
-                        }],
-                    ],
-
-                });
-
-
-
+            delete () {
+                axios.delete(this.url)
+                    .then(({data}) => {
+                        this.$toast.success(data.message, "Success", { timeout: 2000 });
+                        //this.$router.push({ name: 'questions' });
+                        setTimeout(() =>{
+                            window.location.href = "/";
+                        }, 3000);
+                    });
             }
+
         }
     }
 </script>

@@ -15,16 +15,16 @@ class QuestionResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'              => $this->id,
-            'title'           => $this->title,
-            'votes_count'     => $this->votes_count,
-            'answers_count'   => $this->answers_count,
-            'is_favored'    => $this->is_favored,
-            'favorites_count' => $this->favorites_count,
-            'body'            => $this->body,
-            'body_html'       => $this->body_html,
-            'user'            => new UserResource($this->user),
-            'created_date'    => $this->created_date,
+            'id' => $this->id,
+            'title' => $this->title,
+            'slug' => $this->id . '-' . $this->slug,
+            'votes_count' => $this->votes_count,
+            'answers_count' => $this->answers_count,
+            'views' => $this->views,
+            'status' => $this->status,
+            'excerpt' => $this->excerpt,
+            'created_date' => $this->created_date,
+            'user' => new UserResource($this->user),
         ];
     }
 }

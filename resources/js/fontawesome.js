@@ -1,7 +1,7 @@
-import fontawesome from '@fortawesome/fontawesome';
-import faCaretUp from '@fortawesome/fontawesome-free-solid'
-import faCaretDown from '@fortawesome/fontawesome-free-solid'
-import faStar from '@fortawesome/fontawesome-free-solid'
-import faCheck from '@fortawesome/fontawesome-free-solid'
+import {config, library, dom} from "@fortawesome/fontawesome-svg-core";
+config.autoReplaceSvg = 'nest'
+import {faCaretUp, faCaretDown, faStar, faCheck} from "@fortawesome/free-solid-svg-icons";
 
-fontawesome.library.add(faCaretUp, faCaretDown, faStar, faCheck)
+
+library.add(faCaretUp, faCaretDown, faStar, faCheck);
+dom.watch();

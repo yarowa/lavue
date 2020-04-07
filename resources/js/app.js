@@ -4,6 +4,8 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+import router from "./router";
+
 require('./bootstrap');
 require('./fontawesome');
 import Authorization from './authorization/authorize';
@@ -36,4 +38,5 @@ Vue.component('QuestionPage', require('./components/pages/QuestionPage.vue').def
 
 const app = new Vue({
     el: '#app',
+    router
 });

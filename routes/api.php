@@ -13,6 +13,29 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::post('/register','Api\Auth\RegisterController');
+Route::post('/login', 'Api\Auth\LoginController@store');
+Route::delete('/logout', 'Api\Auth\LoginController@destroy')->middleware('auth:api');
+
+//Route::post('/token', 'Auth\LoginController@getToken');
+
+Route::get('/questions', 'Api\QuestionsController@index');
+Route::get('/questions/{question}/answers', 'Api\AnswersController@index');
+Route::get('/questions/{question:slug}', 'Api\QuestionDetailsController');;
+
+Route::middleware(['auth:api'])->group(function () {
+    Route::apiResource('/questions', 'Api\QuestionsController')->except('index', 'show');
+    Route::apiResource('/questions.answers', 'Api\AnswersController')->except('index');
+
+    Route::post('/questions/{question}/vote', 'Api\VoteQuestionController');
+    Route::post('answers/{answer}/vote', 'Api\VoteAnswerController');
+
+    Route::post('/answers/{answer}/accept', 'Api\AcceptAnswerController')->name('answers.accept');
+    Route::post('/questions/{question}/favorites', 'Api\FavoritesController@store')->name('questions.favorite');
+    Route::delete('/questions/{question}/favorites', 'Api\FavoritesController@destroy')->name('questions.unfavorite');
+
+    Route::get('my-posts', 'Api\UsersPostController');
+});
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

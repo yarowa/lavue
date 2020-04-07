@@ -37,9 +37,10 @@
                 <ul class="navbar-nav ml-auto">
 
                     <router-link class="nav-item" tag="li" :to="{ name: 'questions' }"><a class="nav-link">Questions</a> </router-link>
-
-                    <router-link class="nav-item" tag="li" :to="{ name: 'my-posts' }"><a class="nav-link">My posts</a></router-link>
-                    <!-- Authentication Links -->
+                    @if(Auth::user())
+                        <router-link class="nav-item" tag="li" :to="{ name: 'my-posts' }"><a class="nav-link">My posts</a></router-link>
+                    @endif
+                        <!-- Authentication Links -->
                     @guest
                         <li><a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a></li>
                         <li><a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a></li>

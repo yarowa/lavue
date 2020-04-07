@@ -36,16 +36,19 @@
                 Asked by <a href="#"> {{ question.user.name }}</a>
                 <small class="text-muted">{{ question.created_date }}</small>
             </p>
-            <div class="excerpt">
-                {{ question.excerpt }}
-            </div>
+                <div class="excerpt">
+                    {{ question.excerpt }}
+                </div>
         </div>
     </div>
 </template>
 
 <script>
+
+    import highlight from "../mixins/highlight";
     export default {
         name: "QuestionItem",
+        mixins: [highlight],
         props: ['question'],
         methods: {
             str_plural (str, count) {
@@ -59,7 +62,7 @@
                     'status',
                     this.question.status
                 ]
-            }
+            },
         }
     }
 </script>

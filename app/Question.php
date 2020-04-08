@@ -58,10 +58,17 @@ class Question extends Model
         return str_limit(strip_tags($this->bodyHtml()), $length);
     }
 
-    protected function bodyHtml()
+    /*private function bodyHtml()
     {
         $markdown = new CommonMarkConverter(['allow_unsafe_links' => false]);
         return $markdown->convertToHtml($this->body);
+    }*/
+
+
+    public function bodyHtml()
+    {
+        $markdown = new CommonMarkConverter(['allow_unsafe_links' => false]);
+        return $this->body ? $markdown->convertToHtml($this->body) : null;
     }
 
     public function answers()

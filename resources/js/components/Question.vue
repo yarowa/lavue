@@ -21,20 +21,21 @@
                         </div>
                     </div>
                 </form>
-                <div class="card-body" v-show="! editing">
+                <div class="card-body" v-show="!editing">
                     <div class="card-title">
-                        <div class="d-flex align-item-center">
-                            <h2>{{ title }}</h2>
+                        <div class="d-flex align-items-center">
+                            <h1>{{ title }}</h1>
                             <div class="ml-auto">
-                                <a href="/questions" class="btn btn-sm btn-outline-secondary">Back to All Questions</a>
+                                <router-link exact :to="{ name: 'questions' }" class="btn btn-outline-secondary">Back to all Questions</router-link>
                             </div>
                         </div>
-
                     </div>
-                    <hr>
-                    <div class="media">
 
-                        <Vote :model="question" name="question"></Vote>
+                    <hr>
+
+                    <div class="media">
+                        <vote :model="question" name="question"></vote>
+
                         <div class="media-body">
                             <div v-html="bodyHtml" ref="bodyHtml"></div>
                             <div class="row">
@@ -45,8 +46,7 @@
                                     </div>
                                 </div>
                                 <div class="col-4"></div>
-                                <UserInfo :model="question" label="Asked"></UserInfo>
-
+                                    <user-info :model="question" label="Asked"></user-info>
                             </div>
                         </div>
                     </div>
@@ -57,21 +57,26 @@
 </template>
 
 <script>
+
+    import Editor from "./Editor";
     import paths from "../mixins/paths";
+    import eventBus from "../event-bus";
     export default {
-        name: "Question",
+        components: {Editor},
+        mounted () {
+            eventBus.$on('answers-count-changed', (count) => {
+                this.question.answers_count = count;
+            })
+        },
         props: ['question'],
         mixins: [paths],
-
-
-
         data () {
             return {
                 title: this.question.title,
                 body: this.question.body,
                 bodyHtml: this.question.body_html,
                 id: this.question.id,
-                beforeEdit: {}
+                beforeEditCache: {}
             }
         },
         computed: {
@@ -87,39 +92,28 @@
         },
         methods: {
             setEditCache () {
-                this.beforeEdit = {
+                this.beforeEditCache = {
                     body: this.body,
                     title: this.title
                 };
             },
-
             restoreFromCache () {
-                this.body = this.beforeEdit.body;
-                this.title = this.beforeEdit.title;
+                this.body = this.beforeEditCache.body;
+                this.title = this.beforeEditCache.title;
             },
-
             payload () {
                 return {
                     body: this.body,
                     title: this.title
                 };
             },
-
             delete () {
                 axios.delete(this.url)
                     .then(({data}) => {
                         this.$toast.success(data.message, "Success", { timeout: 2000 });
-                        //this.$router.push({ name: 'questions' });
-                        setTimeout(() =>{
-                            window.location.href = "/";
-                        }, 3000);
+                        this.$router.push({ name: 'questions' });
                     });
             }
-
         }
     }
 </script>
-
-<style scoped>
-
-</style>

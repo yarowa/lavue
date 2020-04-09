@@ -22,9 +22,8 @@ class LoginController extends Controller
             'password' => $request->password,
         ]);
 
-        $tokenRequest = Request::create(env('APP_URL') . '/oauth/token', 'post');
-
-        $response = Route::dispatch($tokenRequest);
+        $requestToken = Request::create(env('APP_URL') . '/oauth/token', 'post');
+        $response = Route::dispatch($requestToken);
 
         return $response;
     }

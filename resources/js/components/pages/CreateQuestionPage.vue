@@ -15,7 +15,7 @@
 
                     <div class="card-body">
                         <!--Question form -->
-                        <question-form @Submitted="create"></question-form>
+                        <question-form @submitted="create"></question-form>
                     </div>
                 </div>
             </div>

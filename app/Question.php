@@ -58,18 +58,23 @@ class Question extends Model
         return str_limit(strip_tags($this->bodyHtml()), $length);
     }
 
-    /*private function bodyHtml()
+    private function bodyHtml()
     {
         $markdown = new CommonMarkConverter(['allow_unsafe_links' => false]);
         return $markdown->convertToHtml($this->body);
-    }*/
+    }
 
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
 
-    public function bodyHtml()
+   /* public function bodyHtml()
     {
         $markdown = new CommonMarkConverter(['allow_unsafe_links' => false]);
         return $this->body ? $markdown->convertToHtml($this->body) : null;
-    }
+    }*/
 
     public function answers()
     {
@@ -89,7 +94,7 @@ class Question extends Model
 
     public function isFavored()
     {
-        return $this->favorites()->where('user_id', auth()->id())->count() > 0;
+        return $this->favorites()->where('user_id', auth('api')->id())->count() > 0;
     }
 
     public function getIsFavoredAttribute()

@@ -18,7 +18,6 @@ Route::view('/{any}', 'spa')->where('any', '.*');
 Route::get('/', 'QuestionsController@index');
 
 
-
 Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('questions', 'QuestionsController')->except('show');
 Route::resource('/questions.answers', 'AnswersController')->except(['create', 'show']);

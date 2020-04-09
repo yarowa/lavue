@@ -64,8 +64,8 @@
             fetchQuestion () {
                 axios.get(`/questions/${this.$route.params.id}`)
                     .then(({ data }) => {
-                        this.title = data.title
-                        this.body = data.body
+                        this.title = data.title;
+                        this.body = data.body;
                     })
                     .catch(error => {
                         console.log(error.response);

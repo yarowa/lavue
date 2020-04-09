@@ -1,10 +1,10 @@
+
 import QuestionsPage from "../components/pages/QuestionsPage";
 import UsersPostsPage from "../components/pages/UsersPostsPage";
 import QuestionPage from "../components/pages/QuestionPage";
 import NotFoundPage from "../components/pages/NotFoundPage";
 import CreateQuestionPage from "../components/pages/CreateQuestionPage";
 import EditQuestionPage from "../components/pages/EditQuestionPage";
-
 
 const routes = [
     {
@@ -23,12 +23,12 @@ const routes = [
         name: 'questions.create'
     },
     {
-        path: '/questions/:id/edit',
+        path: '/questions/:id/edit', //this.$router.params.id
         component: EditQuestionPage,
         name: 'questions.edit'
     },
     {
-        path: '/my-posts',
+        path: '/home',
         component: UsersPostsPage,
         name: 'my-posts',
         meta: {
@@ -36,13 +36,14 @@ const routes = [
         }
     },
     {
-        path: '/questions/:question',
+        path: '/questions/:slug',
         component: QuestionPage,
-        name: 'questions.show'
+        name: 'questions.show',
+        props: true,
     },
     {
         path: '*',
-        component: NotFoundPage,
+        component: NotFoundPage
     }
-];
+]
 export default  routes

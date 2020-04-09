@@ -27,12 +27,11 @@
     import QuestionForm from "../QuestionForm";
     import EventBus from "../../event-bus";
     export default {
-        name: "CreateQuestionPage",
         components: {QuestionForm},
 
         methods: {
             update (data) {
-                axios.put('/questions/' + this.$route.params.id, data)
+                axios.put(`/questions/${this.$route.params.id}`, data)
                     .then(({ data }) => {
                         this.$router.push({ name: 'questions' })
                         this.$toast.success(data.message, "Success")

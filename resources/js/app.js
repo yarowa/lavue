@@ -4,11 +4,12 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-import router from "./router";
 
 require('./bootstrap');
 require('./fontawesome');
 import Authorization from './authorization/authorize';
+import router from "./router";
+
 window.Vue = require('vue');
 
 import VueIziToast from 'vue-izitoast';

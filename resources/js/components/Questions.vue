@@ -1,7 +1,7 @@
 <template>
     <div class="card-body">
         <div v-if="questions.length">
-            <question-excerpt @deleted="remove(index)" v-for="(question, index) in questions" :question="question" :key="question.id"></question-excerpt>
+            <question-excerpt v-for="question in questions" :question="question" :key="question.id"></question-excerpt>
         </div>
         <div v-else class="alert alert-warning">
             <strong>Sorry</strong> There are no questions available
@@ -14,12 +14,13 @@
 </template>
 
 <script>
-    import QuestionExcerpt from "./QuestionExcerpt";
+
     import Pagination from "./Pagination";
+    import QuestionExcerpt from "./QuestionExcerpt";
 
     export default {
         name: "QuestionsPage",
-        components: { QuestionExcerpt, Pagination },
+        components: {Pagination, QuestionExcerpt },
         data () {
             return {
                 questions: [],

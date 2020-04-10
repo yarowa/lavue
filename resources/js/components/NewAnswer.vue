@@ -13,7 +13,10 @@
                                 </Editor>
                             </div>
                             <div class="form-group">
-                                <button :disabled="isInvalid" type="submit" class="btn btn-lg btn-outline-primary">Submit</button>
+                                <button :disabled="isInvalid" type="submit" class="btn btn-lg btn-outline-primary">
+                                    <spinner :small="true" v-if="$root.loading"></spinner>
+                                    <span :min-width="59.22" v-else>Submit</span>
+                                </button>
                             </div>
                         </form>
 

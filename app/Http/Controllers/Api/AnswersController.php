@@ -42,6 +42,7 @@ class AnswersController extends Controller
      */
     public function store(Question $question,Request $request)
     {
+        if (env('APP_ENV') == 'local') sleep(2);
         $answer = $question->answers()->create($request->validate([
             'body' => 'required'
         ]) + ['user_id' => Auth::id()]);

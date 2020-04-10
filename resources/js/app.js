@@ -5,6 +5,7 @@
  */
 
 
+import Spinner from "./components/Spinner";
 require('./bootstrap');
 require('./fontawesome');
 import Authorization from './authorization/authorize';
@@ -28,8 +29,7 @@ Vue.use(Authorization);
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
-Vue.component('QuestionPage', require('./components/pages/QuestionPage.vue').default);
+Vue.component('Spinner', Spinner);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -39,5 +39,27 @@ Vue.component('QuestionPage', require('./components/pages/QuestionPage.vue').def
 
 const app = new Vue({
     el: '#app',
+    data: {
+      loading: false
+    },
+    created () {
+        // Add a request interceptor
+        axios.interceptors.request.use( (config) => {
+            this.loading =  true;
+            return config;
+        }, (error) => {
+            this.loading = false;
+            return Promise.reject(error);
+        });
+
+// Add a response interceptor
+        axios.interceptors.response.use((response) => {
+            this.loading = false;
+            return response;
+        },  (error) => {
+            this.loading = false;
+            return Promise.reject(error);
+        });
+    },
     router
 });

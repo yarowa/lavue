@@ -21,6 +21,7 @@ class QuestionsController extends Controller
      */
     public function index()
     {
+        if (env('APP_ENV') == 'local') sleep(2);
         $questions = Question::with(['user', 'answers.user'])->latest()->paginate(5);
         return QuestionResource::collection($questions);
     }
@@ -33,6 +34,7 @@ class QuestionsController extends Controller
      */
     public function store(AskQuestionRequest $request)
     {
+        if (env('APP_ENV') == 'local') sleep(2);
         $question = $request->user()->questions()->create($request->only('title', 'body'));
 
         return response()->json([

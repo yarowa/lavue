@@ -17,7 +17,10 @@
 <script>
 
     import Pagination from "./Pagination";
-    import QuestionExcerpt from "./QuestionExcerpt";;
+    import QuestionExcerpt from "./QuestionExcerpt";
+    import eventBus from "../event-bus";
+
+    ;
 
     export default {
         name: "QuestionsPage",
@@ -32,6 +35,10 @@
 
         mounted() {
             this.fetchQuestions();
+            eventBus.$on('deleted', (id) => {
+                let index = this.questions.findIndex(question => id === question.id)
+                this.remove(index)
+            })
         },
         methods: {
             fetchQuestions () {
